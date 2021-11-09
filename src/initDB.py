@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 import time
 
+# client = MongoClient('mongodb://ID:PASSWORD@IP', 27017)
 client = MongoClient('localhost', 27017)
 db = client.dbJM
 
@@ -14,7 +15,7 @@ def getDataFromGS25():
     # mac Safari
     driver = webdriver.Safari()
     driver.get('http://gs25.gsretail.com/gscvs/ko/products/youus-freshfood')
-
+    time.sleep(1)
     #도시락 버튼 클릭
     try:
         lunchboxBtn = driver.find_element(By.ID, 'productLunch')
@@ -53,7 +54,7 @@ def getDataFromCU():
     # mac Safari
     driver = webdriver.Safari()
     driver.get('http://cu.bgfretail.com/product/product.do?category=product&depth2=4&sf=N')
-
+    time.sleep(1)
     #도시락 버튼 클릭
     try:
         lunchboxBtn = driver.find_element(By.CLASS_NAME, 'eventInfo_02')
@@ -98,13 +99,15 @@ def getDataFrom7Eleven():
     # mac Safari
     driver = webdriver.Safari()
     driver.get('https://www.7-eleven.co.kr/product/bestdosirakList.asp?pTab=mini')
-
+    time.sleep(1)
     #더보기 버튼이 안보일때 까지 클릭
     try:
-        while(1):
+        i=0
+        while(i<8):
             lunchboxBtn = driver.find_element(By.ID, 'moreImg')
             lunchboxBtn.click()
             time.sleep(2)
+            i = i+1
     except NoSuchElementException as e:
         print(e)
         print('NoSuchElementException#1')
@@ -139,9 +142,9 @@ def getDataFrom7Eleven():
     print('7Eleven done')
 
 def main():
-    db.lunchbox.drop()
-    getDataFromGS25()
-    getDataFromCU()
+    #db.lunchbox.drop()
+    #getDataFromGS25()
+    #getDataFromCU()
     getDataFrom7Eleven()
 
 if __name__ == "__main__":
