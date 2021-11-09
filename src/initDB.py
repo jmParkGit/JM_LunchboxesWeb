@@ -1,6 +1,3 @@
-import requests
-from bs4 import BeautifulSoup
-
 from pymongo import MongoClient
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -142,9 +139,9 @@ def getDataFrom7Eleven():
     print('7Eleven done')
 
 def main():
-    #db.lunchbox.drop()
-    #getDataFromGS25()
-    #getDataFromCU()
+    db.lunchbox.drop()
+    getDataFromGS25()
+    getDataFromCU()
     getDataFrom7Eleven()
 
 if __name__ == "__main__":
