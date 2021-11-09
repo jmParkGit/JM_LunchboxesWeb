@@ -139,7 +139,7 @@ def getDataFrom7Eleven():
     print('7Eleven done')
 
 def main():
-    #db.lunchbox.drop()
+    db.lunchbox.drop()
     getDataFromGS25()
     getDataFromCU()
     getDataFrom7Eleven()
