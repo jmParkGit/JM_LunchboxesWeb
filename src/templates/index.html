@@ -1,150 +1,178 @@
 <!Doctype html>
 <html lang="ko">
 
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-              integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-              crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
 
-        <!-- JS -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-                integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-                crossorigin="anonymous"></script>
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
 
-        <!-- 구글폰트 -->
-        <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
+    <!-- 구글폰트 -->
+    <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
 
 
-        <title>편의점 도시락 여행</title>
+    <title>편의점 도시락 여행</title>
 
-        <!-- style -->
-        <style type="text/css">
-            * {
-                font-family: "Stylish", sans-serif;
-            }
+    <!-- style -->
+    <style type="text/css">
+        * {
+            font-family: "Stylish", sans-serif;
+        }
 
-            .wrap {
-                width: 900px;
-                margin: auto;
-            }
+        .wrap {
+            width: 900px;
+            margin: auto;
+        }
 
-            .comment {
-                color: blue;
-                font-weight: bold;
-            }
+        .jumbotron_backgorund {
+            background: url("../static/rice.jpeg");
+            background-size: 100%;
+            background-position: center;
+            background-filter: blur(50px);
+        }
 
-            #post-box {
-                width: 500px;
-                margin: 20px auto;
-                padding: 50px;
-                border: black solid;
-                border-radius: 5px;
-            }
-        </style>
-        <script>
-            let myConvenience='CU'
-            $(document).ready(function () {
-                showLunchboxes();
+        #post-box {
+            width: 500px;
+            margin: 20px auto;
+            padding: 50px;
+            border: black solid;
+            border-radius: 5px;
+        }
+
+        .my_post-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+    <script>
+        let myConvenience = 'CU'
+        $(document).ready(function () {
+            showLunchboxes();
+        });
+
+        function buttonCU() {
+            myConvenience = 'CU'
+            showLunchboxes();
+
+        }
+
+        function button7Eleven() {
+            myConvenience = 'Eleven'
+            showLunchboxes();
+        }
+
+        function buttonGS25() {
+            myConvenience = 'GS25'
+            showLunchboxes();
+        }
+
+        function likeLunchbox(title) {
+            $.ajax({
+                type: 'POST',
+                url: '/api/like',
+                data: {title_give: title},
+                success: function (response) {
+                    alert(response['msg']);
+                    showLunchboxes();
+                }
             });
+        }
 
-            function buttonCU() {
-                myConvenience='CU'
-                showLunchboxes();
-
+        function openClose() {
+            if ($("#post-box").css("display") == "block") {
+                $("#post-box").hide();
+                $("#btn-post-box").text("편의점 찾아보기");
+            } else {
+                $("#post-box").show();
+                $("#btn-post-box").text("도시락 계속 둘러보기");
             }
+        }
 
-            function button7Eleven() {
-                myConvenience='Eleven'
-                showLunchboxes();
-            }
+        function showLunchboxes() {
+            $("#cards-box").empty()
 
-            function buttonGS25() {
-                myConvenience='GS25'
-                showLunchboxes();
-            }
+            $.ajax({
+                type: "GET",
+                url: "/memo",
+                data: {},
+                success: function (response) {
+                    let lunchboxes = response['all_lunchbox']
 
-            function likeLunchbox(title) {
-                $.ajax({
-                    type: 'POST',
-                    url: '/api/like',
-                    data: {title_give:title},
-                    success: function (response) {
-                        alert(response['msg']);
-                        showLunchboxes();
-                    }
-                });
-            }
+                    for (let i = 0; i < lunchboxes.length; i++) {
+                        let title = lunchboxes[i]['title']
+                        let image = lunchboxes[i]['img_url']
+                        let cost = lunchboxes[i]['cost']
+                        let like = lunchboxes[i]['like']
+                        let convenience = lunchboxes[i]['convenience']
 
-            function showLunchboxes() {
-                $("#cards-box").empty()
+                        if (convenience != myConvenience)
+                            continue
 
-                $.ajax({
-                    type: "GET",
-                    url: "/memo",
-                    data: {},
-                    success: function (response) {
-                        let lunchboxes=response['all_lunchbox']
+                        let temp_html = `<div class="card">
+                                                <img class="card-img-top"
+                                                     src="${image}"
+                                                     alt="Card image cap">
+                                                <div class="card-body">
+                                                    <p class="card-title">${title}</p>
+                                                    <p class="card-text">${cost}원</p>
 
-                        for(let i=0; i<lunchboxes.length;i++) {
-                            let title=lunchboxes[i]['title']
-                            let image=lunchboxes[i]['img_url']
-                            let cost=lunchboxes[i]['cost']
-                            let like=lunchboxes[i]['like']
-                            let convenience=lunchboxes[i]['convenience']
-
-                            if(convenience != myConvenience)
-                                continue
-
-                            let temp_html =`<div class="card">
-                                            <img class="card-img-top"
-                                                 src="${image}"
-                                                 alt="Card image cap">
-                                            <div class="card-body">
-                                                <p class="card-title">${title}</p>
-                                                <p class="card-text">${cost}</p>
-                                                <p class="card-text">${like}</p>
-                                                <footer class="card-footer">
                                                     <a href="#" onclick="likeLunchbox('${title}')" class="card-footer-item has-text-info">
-                                                       좋아요!
-                                                        <span class="icon">
-                                              <i class="fas fa-thumbs-up"></i>
-                                            </div>
-                                        </div>`
+                                                        <img src="../static/like.png" alt="" style="max-width: 10%; height: auto;"></a> ${like}
 
-                            $('#cards-box').append(temp_html)
+                                                </div>
+                                            </div>`
 
-                        }
+                        $('#cards-box').append(temp_html)
+
                     }
-                })
-            }
-        </script>
+                }
+            })
+        }
+    </script>
 
-    </head>
+</head>
 
-    <body>
-        <div class="wrap">
-            <div class="jumbotron">
-                <h1 class="display-4">편의점 식도락 여행!</h1>
-                <p class="lead">밥은 먹고 삽시다 ^^</p>
-                <hr class="my-4">
-                <p class="lead">
-                    <button onclick="buttonCU()" id="btn-post-box_CU" type="button" class="btn btn-primary">CU
-                    </button>
-                    <button onclick="button7Eleven()" id="btn-post-box_7Eleven" type="button" class="btn btn-primary">7Eleven
-                    </button>
-                    <button onclick="buttonGS25()" id="btn-post-box" type="button_GS25" class="btn btn-primary">GS25
-                    </button>
-                </p>
-            </div>
-            <div id="cards-box" class="card-columns">
-            </div>
-        </div>
-    </body>
+<body>
+<div class="wrap">
+    <div class="jumbotron jumbotron_backgorund">
+        <h1 class="display-4">편의점 식도락 여행!</h1>
+        <p class="lead">
+            밥은 먹고 삽시다 ^^
+        </p>
+        <hr class="my-4">
+        <p class="lead">
+            <button onclick="buttonCU()" id="btn-post-box_CU" type="button" class="btn btn-primary">CU
+            </button>
+            <button onclick="button7Eleven()" id="btn-post-box_7Eleven" type="button" class="btn btn-primary">7Eleven
+            </button>
+            <button onclick="buttonGS25()" id="btn-post-box_GS25" type="button" class="btn btn-primary">GS25
+            </button>
+            <button onclick="openClose()" id="btn-post-box" type="button" class="btn btn-primary">편의점 찾아보기
+            </button>
+        </p>
+    </div>
+    <div id="post-box" class="form-post my_post-box" style="display:none">
+        <a href="https://map.naver.com/v5/search/CU" class="" target="_blank">
+            <img src="../static/CU_100px.png" alt="" style="max-width: 100%; height: auto;"></a>
+        <a href="https://map.naver.com/v5/search/세븐일레븐" class="" target="_blank">
+            <img src="../static/eleven_100px.png" alt="" style="max-width: 100%; height: auto;"></a>
+        <a href="https://map.naver.com/v5/search/GS25" class="" target="_blank">
+            <img src="../static/GS25_100px.png" alt="" style="max-width: 100%; height: auto;"></a>
+    </div>
+    <div id="cards-box" class="card-columns">
+    </div>
+</div>
+
+</body>
 
 </html>
