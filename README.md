@@ -10,7 +10,6 @@
 
 ## 2. 프로젝트 시연 영상
 - [편의점 식도락 여행 시연영상 유튜브](https://youtu.be/UiIku2wgKjk)   
-<iframe width="640" height="360" src="https://www.youtube.com/embed/UiIku2wgKjk" frameborder="0" gesture="media" allowfullscreen=""></iframe>
 
 ## 3. 사용한 lib
 - mongoDB
